@@ -1,0 +1,6 @@
+{
+  "name": "QuantumLens",
+  "description": "Quantum Materials and Advanced Electronic-Structure Analysis Platform",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,558 @@
+# QuantumLens — Quantum Materials and Advanced Electronic-Structure Analysis
+
+## 1. Project Vision
+
+Build QuantumLens as a computational physics analysis platform specializing in electronic structures, quantum materials, magnetism, and topological phenomena.
+
+The platform should support conventional electronic-structure analysis while providing specialized tools for researchers studying:
+
+- Kagome materials and frustrated lattice systems.
+- Altermagnets and unconventional magnetic materials.
+- Dirac and Weyl semimetals.
+- Topological insulators and topological semimetals.
+- Spin-orbit-coupled electronic structures.
+- Magnetic materials with momentum-dependent spin splitting.
+- Flat bands and van Hove singularities.
+- Berry curvature, anomalous Hall conductivity, and related transport phenomena.
+- Two-dimensional materials and other systems with unusual electronic properties.
+
+**Mission:** Transform computational electronic-structure data into reliable, reproducible, physics-aware analysis and visualization.
+
+**Core principle:** QuantumLens must distinguish between directly extracted numerical results, calculated physical quantities, candidate physical phenomena, and conclusions that require additional calculations or theoretical justification.
+
+The platform must not claim to establish a physical phenomenon solely because a plot resembles a familiar pattern.
+
+## 2. Supported Scientific Software and Data
+
+Initially prioritize VASP and Quantum ESPRESSO, with modular support for other scientific codes and post-processing tools.
+
+### VASP
+Support relevant data from:
+- OUTCAR.
+- vasprun.xml.
+- EIGENVAL.
+- DOSCAR.
+- PROCAR.
+- WAVECAR or other appropriate wavefunction-derived data where feasible.
+- Fermi-surface or Berry-curvature post-processing outputs.
+
+### Quantum ESPRESSO
+Support relevant data from:
+- pw.x output files.
+- bands.x output files.
+- projwfc.x output files.
+- dos.x and related outputs.
+- Noncollinear and spin-orbit-coupled calculations.
+- Spin expectation values or projected spin data when available.
+- Appropriate wavefunction-derived or post-processed data.
+
+### Wannier-based workflows
+Plan integration with:
+- Wannier90.
+- Wannier Hamiltonians such as wannier90_hr.dat.
+- Wannier-interpolated band structures.
+- Wannier-based Fermi surfaces.
+- Berry-curvature and transport outputs from compatible post-processing tools, including WannierBerri.
+
+For each format, explicitly document the supported version, data requirements, units, and limitations.
+
+Do not require researchers to upload enormous raw wavefunction files when an appropriate processed dataset contains the information needed for the requested analysis.
+
+## 3. Core Module A: Advanced Band Structure Analysis
+
+Develop an interactive band-structure explorer for conventional, spin-polarized, magnetic, and spin-orbit-coupled systems.
+
+### Features
+- Plot eigenvalues along arbitrary reciprocal-space paths.
+- Display high-symmetry-point labels and path segments.
+- Support fractional and Cartesian reciprocal coordinates.
+- Set and compare Fermi-energy references.
+- Select individual bands and energy windows.
+- Highlight selected bands and candidate crossings.
+- Compare multiple calculations on the same axes.
+- Display spin-up and spin-down channels where physically appropriate.
+- Display spin expectation values using colors, symbols, or vector representations when available.
+- Display orbital, atomic-site, and element projections when supported.
+- Export plots and underlying numerical data.
+
+### Physics-aware analysis
+Identify and characterize candidate:
+- Dirac points.
+- Weyl points when sufficient three-dimensional information is available.
+- Nodal-line or nodal-loop features.
+- Band crossings and avoided crossings.
+- Flat and weakly dispersive bands.
+- Band inversions and changes in band ordering.
+- Symmetry-related band degeneracies.
+- Spin splitting and SOC-induced band gaps.
+
+Every automatically identified feature should include its estimated location, energy, numerical evidence, detection method, and confidence or verification status.
+
+Do not infer topological protection solely from an apparent crossing in a plotted band structure.
+
+## 4. Core Module B: Kagome Materials Analyzer
+
+Create a specialized analysis workspace for kagome-lattice materials.
+
+The module should help researchers investigate the characteristic electronic structures associated with kagome geometry and its interactions with magnetism, spin-orbit coupling, and electronic correlations.
+
+### B1. Flat-band detection
+
+Identify candidate flat or weakly dispersive bands.
+
+Calculate and report:
+- Bandwidth over a specified k-space region.
+- Energy range of the band.
+- Dispersion along selected reciprocal-space directions.
+- Band index and energy relative to the Fermi level.
+- Sensitivity to the chosen energy reference and k-point path.
+- Available orbital or atomic projections.
+
+Allow users to select a bandwidth threshold, while clearly labeling the threshold as a user-defined heuristic rather than a universal physical criterion.
+
+Distinguish a genuinely weakly dispersive band over a well-sampled region from a band that merely appears flat along a short high-symmetry path.
+
+### B2. Dirac-point detection
+
+Search for candidate Dirac crossings in the supplied band data.
+
+Provide:
+- Estimated k-point coordinates.
+- Crossing energy.
+- Candidate band indices.
+- Approximate energy separation between bands.
+- Local dispersion in available directions.
+- Evidence of symmetry-related crossings.
+- Comparison between calculations with and without SOC.
+
+Where sufficiently dense local data are available, estimate linear dispersion and anisotropy around the crossing.
+
+Distinguish a candidate Dirac point from an avoided crossing or an accidental degeneracy. Do not claim symmetry protection without the relevant symmetry analysis.
+
+### B3. Van Hove singularities
+
+Analyze total and projected density of states for peaks that may be associated with van Hove singularities.
+
+Provide:
+- Peak energy.
+- Peak height and width under the stated numerical broadening.
+- Orbital and atomic projections where available.
+- Relation to nearby bands and candidate saddle points when sufficient k-space information is supplied.
+
+Treat a DOS peak as a candidate feature, not definitive proof of a van Hove singularity.
+
+### B4. Kagome-specific visualization
+
+Provide a combined view of:
+- Band structures.
+- Total and projected DOS.
+- Candidate flat bands.
+- Candidate Dirac points.
+- Fermi-surface features.
+- Spin splitting.
+- SOC-induced changes.
+
+Support comparisons between different magnetic configurations, structures, or computational settings.
+
+## 5. Core Module C: Altermagnet Analysis
+
+Develop a dedicated module for investigating altermagnetic electronic structures and related magnetic-symmetry phenomena.
+
+The objective is to help researchers characterize momentum-dependent spin splitting and evaluate whether their calculations are consistent with an altermagnetic interpretation.
+
+### C1. Spin-resolved band structures
+
+Support:
+- Collinear spin-polarized calculations without SOC.
+- Spin-polarized calculations with SOC.
+- Noncollinear magnetic calculations.
+- Spin expectation values resolved by band and k-point.
+- Comparison of magnetic configurations.
+- Comparison of calculations with and without Hubbard U, where supplied.
+
+Display spin information using:
+- Spin-channel colors for suitable collinear calculations.
+- Color maps for the expectation value of a selected spin component.
+- Vector or component-resolved representations for noncollinear calculations.
+- Selectable energy and reciprocal-space windows.
+
+Do not equate spin-up/down channel labels with a universal physical spin direction when the calculation uses noncollinear magnetism or SOC.
+
+### C2. Momentum-dependent spin splitting
+
+Calculate the energy separation between relevant bands at the same k-point.
+
+Provide:
+- Spin-resolved energy differences.
+- Maximum and representative splitting values within a defined k-space region.
+- Momentum-dependent splitting maps.
+- Splitting along user-selected high-symmetry paths.
+- Comparisons between magnetic configurations.
+- Optional symmetry-related k-point comparisons.
+
+Explain the convention used to match bands. Band indices alone may not provide reliable correspondence near degeneracies or band crossings.
+
+### C3. Spin texture
+
+When spin expectation values are available, visualize:
+
+- Sx(k), Sy(k), and Sz(k).
+- In-plane spin textures.
+- Out-of-plane spin components.
+- Spin textures on selected bands.
+- Spin textures on constant-energy surfaces when the required data is available.
+
+Support spin expectation values obtained from appropriate calculations or post-processing tools.
+
+Do not reconstruct a physical spin texture from ordinary eigenvalues alone.
+
+### C4. Magnetic symmetry and classification
+
+Allow users to supply or identify:
+- Crystal structure.
+- Magnetic space group when known.
+- Magnetic ordering.
+- Moment directions.
+- Magnetic symmetry operations.
+- Relevant computational settings.
+
+Provide symmetry-aware diagnostics for expected band degeneracies, allowed spin splitting, and symmetry-related momentum points.
+
+Where feasible, integrate magnetic symmetry analysis and magnetic space-group identification.
+
+Distinguish a candidate altermagnetic electronic structure from a confirmed altermagnetic classification. Spin splitting alone is not sufficient to establish altermagnetism.
+
+Clearly state when additional information about magnetic order, symmetry, or the calculation setup is required.
+
+## 6. Core Module D: Spin-Orbit Coupling Analysis
+
+Create a workflow for comparing calculations performed with and without SOC.
+
+### Features
+- Align band structures using a documented energy-reference convention.
+- Compare eigenvalues at equivalent k-points.
+- Detect candidate SOC-induced gaps.
+- Identify changes in band ordering.
+- Highlight changes in degeneracies and avoided crossings.
+- Compare band dispersions near the Fermi level.
+- Compare spin expectation values where meaningful.
+- Compare DOS before and after SOC.
+- Identify changes in candidate Dirac, Weyl, or nodal features.
+
+### Quantitative analysis
+
+For selected bands and k-space regions, calculate:
+- Energy shifts.
+- Candidate gap openings.
+- Changes in local dispersion.
+- Changes in band ordering.
+- Changes in Fermi-level crossings.
+- Changes in spin expectation values.
+
+Require compatible structures, reciprocal-space coordinates, computational settings, and band correspondence for meaningful comparisons.
+
+Flag comparisons where different structures, k-point paths, energy references, or calculation settings make direct interpretation unreliable.
+
+Do not infer a topological phase transition merely from an SOC-induced gap. Topological invariants or other suitable evidence may be required.
+
+## 7. Core Module E: Fermi Surface Analysis
+
+Develop an interactive Fermi-surface explorer for three-dimensional and two-dimensional electronic structures.
+
+### Features
+- Visualize constant-energy surfaces.
+- Select the Fermi energy or another energy of interest.
+- Display individual bands or selected band groups.
+- Color surfaces by band index, velocity, spin expectation value, or other available quantities.
+- Display spin-resolved surfaces when appropriate.
+- Inspect high-symmetry points and reciprocal-space boundaries.
+- Generate two-dimensional k-space slices.
+- Export images, mesh data, and numerical data where supported.
+
+### Scientific requirements
+
+Distinguish between:
+- Fermi surfaces reconstructed from a sampled three-dimensional eigenvalue grid.
+- Approximate surfaces generated from interpolated band energies.
+- Apparent crossings seen only along a high-symmetry path.
+
+A high-symmetry band path alone is insufficient to reconstruct a complete Fermi surface.
+
+Support dense k-space grids or reliable interpolation methods when available. Warn about insufficient k-point density, incomplete Brillouin-zone coverage, and interpolation uncertainty.
+
+For spin-split systems, support separate sheets and band-resolved visualization without assuming that spin channels remain independent when SOC is present.
+
+## 8. Core Module F: Berry Curvature and Anomalous Hall Conductivity
+
+Build an advanced module for investigating Berry curvature and anomalous Hall conductivity (AHC).
+
+This module is a high-priority research feature, but it requires more specialized input data and validation than ordinary band-structure plotting.
+
+### F1. Berry curvature visualization
+
+Support compatible Berry-curvature data from suitable electronic-structure and Wannier-based workflows.
+
+Provide:
+- Berry-curvature maps in selected k-space planes.
+- Three-dimensional k-space slices when available.
+- Band-resolved Berry curvature.
+- Occupied-state or summed contributions where supported.
+- Energy-resolved analysis where supplied data permits it.
+- Identification of regions with large positive or negative contributions.
+- Comparison between calculations with and without SOC.
+- Export of numerical grids and publication-quality plots.
+
+Display the component being plotted, its units or normalization convention, the k-space coordinates, and the integration settings.
+
+Do not infer Berry curvature from ordinary band eigenvalues alone.
+
+### F2. Anomalous Hall conductivity
+
+Support AHC calculations from compatible data produced by validated Kubo-formula, Berry-curvature, Wannier interpolation, or equivalent implementations.
+
+Provide:
+- Conductivity tensor components.
+- AHC versus Fermi energy.
+- AHC versus k-space sampling density where data is available.
+- Comparisons between magnetic configurations.
+- Comparisons between calculations with and without SOC.
+- Band-resolved contributions where supported.
+- Convergence diagnostics.
+- Exportable tables and figures.
+
+Display tensor components with explicit indices and units. For three-dimensional bulk conductivity, commonly used units include S/cm; for two-dimensional systems, document the normalization convention and units used by the source.
+
+### F3. AHC validation
+
+Check, where the necessary information is supplied:
+- k-point grid density.
+- Brillouin-zone integration coverage.
+- Fermi-energy reference.
+- Energy and broadening parameters.
+- Convergence with sampling density.
+- Treatment of occupied states.
+- Consistency of units and tensor conventions.
+- Agreement between related calculations or post-processing methods.
+
+Clearly distinguish a value read from an existing output file from a value independently recalculated by QuantumLens.
+
+Do not silently convert units or change conductivity sign conventions.
+
+A large Berry-curvature hotspot does not necessarily imply a large net AHC because contributions from different regions and bands can cancel.
+
+Do not report AHC as a fully validated result if the available inputs are insufficient to verify the integration and convergence.
+
+## 9. Additional Advanced Physics Features
+
+Plan future modules for:
+
+### Topological analysis
+- Berry phases.
+- Chern numbers.
+- Wilson loops.
+- Z2 invariants.
+- Weyl-point candidate detection.
+- Chirality calculations when sufficient local information is available.
+- Nodal-line and nodal-loop investigation.
+- Band inversion analysis.
+
+### Magnetic and spin transport
+- Spin Hall conductivity where supported.
+- Spin Berry curvature.
+- Anomalous Nernst-related quantities when appropriate data and methods are available.
+- Magnetic anisotropy energy from compatible total-energy calculations.
+- Magnetization and magnetic-moment analysis.
+
+### Electronic structure and materials comparison
+- Band alignment.
+- Effective masses.
+- Fermi velocities.
+- Orbital character.
+- Charge-density and spin-density visualization.
+- Comparison of DFT and DFT+U calculations.
+- Comparisons across structures and magnetic configurations.
+
+Implement these features only when the required data, numerical methods, and validation procedures are available.
+
+## 10. Physics-Aware Diagnostic and Interpretation Engine
+
+For every advanced analysis, divide the output into four categories:
+
+**1. Directly extracted data**
+
+Report values directly obtained from supplied files, with source provenance.
+
+**2. Numerically calculated quantities**
+
+Report quantities calculated by QuantumLens, including algorithms, units, and assumptions.
+
+**3. Candidate physical phenomena**
+
+Examples include:
+- Candidate Dirac crossing.
+- Candidate flat band.
+- Candidate SOC-induced gap.
+- Candidate altermagnetic spin splitting.
+- Candidate Berry-curvature hotspot.
+- Candidate topological feature.
+
+Explain the evidence supporting each candidate and what additional checks are required.
+
+**4. Conclusions not established**
+
+Explicitly state what the supplied data cannot prove.
+
+Examples:
+- A band crossing does not alone prove a symmetry-protected Dirac point.
+- A spin-split band structure does not alone prove altermagnetism.
+- A gap opening with SOC does not alone prove a topological insulating phase.
+- A converged SCF calculation does not establish structural or thermodynamic stability.
+- A band path does not establish the complete three-dimensional Fermi surface.
+- A Berry-curvature hotspot does not alone establish a nonzero integrated AHC.
+
+Use AI to explain validated outputs, summarize warnings, and guide further investigation. Numerical calculations and scientific classifications must be grounded in reproducible algorithms and appropriate physical evidence.
+
+## 11. Data Provenance and Reproducibility
+
+For every result, preserve:
+- Original filename and source format.
+- Relevant calculation metadata.
+- Parser and algorithm version.
+- Units and energy-reference conventions.
+- Input files used.
+- Relevant numerical settings.
+- Derived-data transformations.
+- Warnings and validation status.
+
+Allow users to export analysis data, figures, settings, and a report that explains how the result was obtained.
+
+Provide reproducible comparisons between calculations, including compatible non-SOC and SOC runs, different magnetic configurations, and different k-point meshes.
+
+## 12. Interface
+
+Add a specialized Quantum Materials workspace with the following sections:
+
+1. Band Structure Explorer.
+2. Density of States.
+3. Dirac and Band-Crossing Analysis.
+4. Flat-Band Analysis.
+5. Altermagnet and Spin-Splitting Analysis.
+6. SOC Comparison.
+7. Fermi Surface.
+8. Berry Curvature.
+9. Anomalous Hall Conductivity.
+10. Magnetic Symmetry.
+11. Convergence and Numerical Validation.
+12. Reports and Exports.
+
+Allow users to select a research workflow, upload relevant files, see which additional inputs are needed, and then run the appropriate analysis.
+
+Do not display advanced features as available when their required calculations or data are missing.
+
+## 13. Development Priorities
+
+Implement the platform in stages.
+
+### Stage 1: Reliable electronic-structure foundation
+- VASP and Quantum ESPRESSO band parsing.
+- DOS analysis.
+- Fermi-energy alignment.
+- Band-gap estimation.
+- Convergence diagnostics.
+- Exportable plots and numerical data.
+
+### Stage 2: Quantum materials analysis
+- Candidate Dirac-point detection.
+- Flat-band detection.
+- Spin-resolved bands.
+- Momentum-dependent spin-splitting maps.
+- Comparison of SOC and non-SOC calculations.
+- Orbital projections where supported.
+
+### Stage 3: Fermi surfaces and magnetic symmetry
+- Three-dimensional band grids.
+- Fermi-surface reconstruction.
+- Spin textures.
+- Magnetic symmetry-aware analysis.
+- Altermagnet-focused diagnostic workflows.
+
+### Stage 4: Berry curvature and transport
+- Integration with appropriate post-processing tools.
+- Berry-curvature visualization.
+- AHC tensor analysis.
+- Energy-dependent AHC.
+- Convergence testing and validation.
+
+### Stage 5: Topological and advanced transport analysis
+- Berry phases and topological invariants.
+- Weyl and nodal-feature analysis.
+- Additional transport quantities.
+- Expanded support for computational physics codes.
+
+Do not postpone the architecture for advanced features, but do postpone implementing them until the required numerical methods and validation datasets are ready.
+
+## 14. Final Product Requirement
+
+Build QuantumLens as a specialized computational quantum materials analysis platform that connects electronic-structure data to scientifically grounded interpretation.
+
+Its distinguishing features should be:
+- Reliable analysis of VASP and Quantum ESPRESSO results.
+- Dedicated workflows for kagome systems and altermagnets.
+- Quantitative band and spin-splitting analysis.
+- SOC comparisons.
+- Fermi-surface visualization.
+- Berry-curvature and anomalous Hall conductivity analysis.
+- Reproducible calculations and transparent diagnostics.
+- Clear separation between numerical evidence and physical interpretation.
+
+The product should help researchers investigate complex electronic phenomena faster without replacing scientific judgment.
+
+**First advanced milestone:** Deliver a validated band-structure explorer with DOS, band-gap analysis, candidate Dirac-point detection, flat-band detection, spin-resolved visualization, and comparison of SOC and non-SOC calculations. Then expand into Fermi surfaces, magnetic symmetry, Berry curvature, and AHC using validated data pipelines.
+
+The long-term goal is to make QuantumLens a trusted analysis environment for computational researchers investigating unconventional magnetism, kagome physics, topological materials, and advanced electronic structures.
+
+
+## Programming Language and Technology Preferences
+
+### My Background and Preference
+I am most comfortable with Python, particularly for scientific computing, numerical analysis, data processing, and computational physics. Therefore, prioritize Python for the scientific core of this application. Choose technologies that are practical for a solo developer to build, understand, maintain, test, and extend.
+
+### Required Technology Architecture
+
+**1. Scientific analysis backend: Python**
+- Use Python as the primary language for all scientific calculations, data parsing, numerical analysis, and physics-related workflows.
+- Use NumPy and SciPy for numerical computation, pandas for structured data, and Matplotlib or Plotly for scientific plotting.
+- Use FastAPI to expose analysis functions through API endpoints.
+- Use appropriate scientific libraries for parsing VASP, Quantum ESPRESSO, Wannier90, and related outputs. Evaluate each dependency before adopting it.
+- Keep physics calculations in independent, testable Python modules rather than embedding them in web-interface code.
+
+**2. Frontend: TypeScript and React**
+- Use React with Next.js and TypeScript for a responsive, professional web interface.
+- The frontend should communicate with the Python backend through documented API endpoints.
+- Prioritize interactive scientific visualizations, clear analysis workflows, accessible controls, and useful error messages.
+- Do not duplicate scientific calculations in the frontend.
+
+**3. Data and computation**
+- Use PostgreSQL for persistent application data when needed.
+- Design file storage and computational job handling to support large scientific output files.
+- Keep long-running analyses outside the web request lifecycle, using a job queue or worker system when justified.
+- Make the architecture suitable for future high-performance computing workflows.
+
+### Code Quality and Development Preferences
+- Prefer readable, modular Python code with type hints, clear function names, docstrings, and meaningful error handling.
+- Write automated unit tests for parsers, numerical calculations, unit conversions, and scientific diagnostics.
+- Separate raw extracted values, computed numerical results, heuristic detections, and AI-generated explanations.
+- Use deterministic algorithms for scientific results wherever possible. Never let an AI language model invent numerical results or substitute for a validated scientific calculation.
+- Record units, assumptions, source files, calculation methods, and relevant software versions.
+- Use established scientific methods and validate results against trusted examples or reference calculations.
+
+### Implementation Strategy
+- Build the application incrementally, starting with a functional MVP rather than attempting every advanced feature at once.
+- Start with Python-based VASP and Quantum ESPRESSO parsing, band structures, density of states, band gaps, and convergence diagnostics.
+- Then add kagome flat-band and Dirac-point analysis, momentum-dependent spin splitting, and SOC comparisons.
+- Add Fermi surfaces, magnetic symmetry analysis, Berry curvature, and anomalous Hall conductivity in later stages.
+- Keep each feature independently testable and reusable.
+
+### Guidance for AI Coding Tools
+Explain significant architectural decisions and provide commands to run the application and tests. Prefer straightforward, maintainable solutions over unnecessary complexity. Do not introduce additional programming languages, frameworks, or dependencies without a clear technical reason. Preserve a working application as new features are added.
+
